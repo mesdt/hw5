@@ -26,7 +26,7 @@ function PostsDAO(db) {
                 "permalink":permalink,
                 "tags": tags,
                 "comments": [],
-                "date": new Date()}
+                "date": new Date()};
 
         // now insert the post
         // hw3.2 TODO
@@ -38,26 +38,26 @@ function PostsDAO(db) {
             console.log("Inserted new post");
             callback(err, permalink);
         });
-    }
+    };
 
     this.getPosts = function(num, callback) {
         "use strict";
 
-        posts.find().sort('date', -1).limit(num).toArray(function(err, items) {
+        posts.find().sort({date: -1}).limit(num).toArray(function(err, items) {
             "use strict";
 
-            if (err) return callback(err, null);
+            if (err) {console.log(err); return callback(err, null);}
 
             console.log("Found " + items.length + " posts");
 
             callback(err, items);
         });
-    }
+    };
 
     this.getPostsByTag = function(tag, num, callback) {
         "use strict";
 
-        posts.find({ tags : tag }).sort('date', -1).limit(num).toArray(function(err, items) {
+        posts.find({ tags : tag }).sort({date: -1}).limit(num).toArray(function(err, items) {
             "use strict";
 
             if (err) return callback(err, null);
@@ -66,7 +66,7 @@ function PostsDAO(db) {
 
             callback(err, items);
         });
-    }
+    };
 
     this.getPostByPermalink = function(permalink, callback) {
         "use strict";
@@ -77,12 +77,12 @@ function PostsDAO(db) {
 
             callback(err, post);
         });
-    }
+    };
 
     this.addComment = function(permalink, name, email, body, callback) {
         "use strict";
 
-        var comment = {'author': name, 'body': body}
+        var comment = {'author': name, 'body': body};
 
         if (email != "") {
             comment['email'] = email

@@ -14,7 +14,7 @@ You are not logged in!        <a href="/login">Login</a> | <a href="/signup">Sig
 <a href="/">Blog Home</a><br><br>
 
 <h2>{{post['title']}}</h2>
-Posted {{post['date']}}<i> By {{post['author']}}</i><br>
+Posted {{post.date|date('c')}}<i> By {{post['author']}}</i><br>
 <hr>
 {% autoescape false %}
 {{post['body']}}

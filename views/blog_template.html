@@ -15,9 +15,9 @@ You are not logged in!        <a href="/login">Login</a> | <a href="/signup">Sig
 
 {% for post in myposts %}
 <h2><a href="/post/{{post['permalink']}}">{{post['title']}}</a></h2>
-Posted {{post['date']}} <i>By {{post['author']}}</i><br>
+Posted {{post['date']|date('c')}} <i>By {{post['author']}}</i><br>
 Comments:
-<a href="/post/{{post['permalink']}}">{{post['comments']|length}}</a>
+<a href="/post/{{post['permalink']}}">{{post.comments.length}}</a><!--|length-->
 <hr>
 {% autoescape false %}
 {{post['body']}}

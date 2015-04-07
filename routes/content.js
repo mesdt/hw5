@@ -1,16 +1,16 @@
 var PostsDAO = require('../posts').PostsDAO
-  , sanitize = require('validator').sanitize; // Helper to sanitize form input
+/*, s-anitize = require('validator').s-anitize; // Helper to s-anitize form input*/;
 
 /* The ContentHandler must be constructed with a connected db */
-function ContentHandler (db) {
+function ContentHandler(db) {
     "use strict";
 
     var posts = new PostsDAO(db);
 
-    this.displayMainPage = function(req, res, next) {
+    this.displayMainPage = function (req, res, next) {
         "use strict";
 
-        posts.getPosts(10, function(err, results) {
+        posts.getPosts(10, function (err, results) {
             "use strict";
 
             if (err) return next(err);
@@ -23,12 +23,12 @@ function ContentHandler (db) {
         });
     }
 
-    this.displayMainPageByTag = function(req, res, next) {
+    this.displayMainPageByTag = function (req, res, next) {
         "use strict";
 
         var tag = req.params.tag;
 
-        posts.getPostsByTag(tag, 10, function(err, results) {
+        posts.getPostsByTag(tag, 10, function (err, results) {
             "use strict";
 
             if (err) return next(err);
@@ -41,12 +41,12 @@ function ContentHandler (db) {
         });
     }
 
-    this.displayPostByPermalink = function(req, res, next) {
+    this.displayPostByPermalink = function (req, res, next) {
         "use strict";
 
         var permalink = req.params.permalink;
 
-        posts.getPostByPermalink(permalink, function(err, post) {
+        posts.getPostByPermalink(permalink, function (err, post) {
             "use strict";
 
             if (err) return next(err);
@@ -66,7 +66,7 @@ function ContentHandler (db) {
         });
     }
 
-    this.handleNewComment = function(req, res, next) {
+    this.handleNewComment = function (req, res, next) {
         "use strict";
         var name = req.body.commentName;
         var email = req.body.commentEmail;
@@ -81,7 +81,7 @@ function ContentHandler (db) {
         if (!name || !body) {
             // user did not fill in enough information
 
-            posts.getPostByPermalink(permalink, function(err, post) {
+            posts.getPostByPermalink(permalink, function (err, post) {
                 "use strict";
 
                 if (err) return next(err);
@@ -105,7 +105,7 @@ function ContentHandler (db) {
         }
 
         // even if there is no logged in user, we can still post a comment
-        posts.addComment(permalink, name, email, body, function(err, updated) {
+        posts.addComment(permalink, name, email, body, function (err, updated) {
             "use strict";
 
             if (err) return next(err);
@@ -116,12 +116,12 @@ function ContentHandler (db) {
         });
     }
 
-    this.displayPostNotFound = function(req, res, next) {
+    this.displayPostNotFound = function (req, res, next) {
         "use strict";
         return res.send('Sorry, post not found', 404);
     }
 
-    this.displayNewPostPage = function(req, res, next) {
+    this.displayNewPostPage = function (req, res, next) {
         "use strict";
 
         if (!req.username) return res.redirect("/login");
@@ -144,36 +144,42 @@ function ContentHandler (db) {
 
         for (var i = 0; i < tags_array.length; i++) {
             if ((cleaned.indexOf(tags_array[i]) == -1) && tags_array[i] != "") {
-                cleaned.push(tags_array[i].replace(/\s/g,''));
+                cleaned.push(tags_array[i].replace(/\s/g, ''));
             }
         }
 
         return cleaned
     }
 
-    this.handleNewPost = function(req, res, next) {
+    this.handleNewPost = function (req, res, next) {
         "use strict";
 
-        var title = req.body.subject
-        var post = req.body.body
-        var tags = req.body.tags
+        var title = req.body.subject;
+        var post = req.body.body;
+        var tags = req.body.tags;
 
         if (!req.username) return res.redirect("/signup");
 
         if (!title || !post) {
             var errors = "Post must contain a title and blog entry";
-            return res.render("newpost_template", {subject:title, username:req.username, body:post, tags:tags, errors:errors});
+            return res.render("newpost_template", {
+                subject: title,
+                username: req.username,
+                body: post,
+                tags: tags,
+                errors: errors
+            });
         }
 
-        var tags_array = extract_tags(tags)
+        var tags_array = extract_tags(tags);
 
         // looks like a good entry, insert it escaped
-        var escaped_post = sanitize(post).escape();
+        var escaped_post = post;//s-anitize(post).escape();
 
         // substitute some <br> for the paragraph breaks
-        var formatted_post = escaped_post.replace(/\r?\n/g,'<br>');
+        var formatted_post = escaped_post.replace(/\r?\n/g, '<br>');
 
-        posts.insertEntry(title, formatted_post, tags_array, req.username, function(err, permalink) {
+        posts.insertEntry(title, formatted_post, tags_array, req.username, function (err, permalink) {
             "use strict";
 
             if (err) return next(err);
