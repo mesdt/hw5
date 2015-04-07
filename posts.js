@@ -16,17 +16,19 @@ function PostsDAO(db) {
         console.log("inserting blog entry" + title + body);
 
         // fix up the permalink to not include whitespace
-        var permalink = title.replace( /\s/g, '_' );
-        permalink = permalink.replace( /\W/g, '' );
+        var permalink = title.replace(/\s/g, '_');
+        permalink = permalink.replace(/\W/g, '');
 
         // Build a new post
-        var post = {"title": title,
-                "author": author,
-                "body": body,
-                "permalink":permalink,
-                "tags": tags,
-                "comments": [],
-                "date": new Date()};
+        var post = {
+            "title": title,
+            "author": author,
+            "body": body,
+            "permalink": permalink,
+            "tags": tags,
+            "comments": [],
+            "date": new Date()
+        };
 
         // now insert the post
         // hw3.2 TODO
@@ -40,13 +42,16 @@ function PostsDAO(db) {
         });
     };
 
-    this.getPosts = function(num, callback) {
+    this.getPosts = function (num, callback) {
         "use strict";
 
-        posts.find().sort({date: -1}).limit(num).toArray(function(err, items) {
+        posts.find().sort({date: -1}).limit(num).toArray(function (err, items) {
             "use strict";
 
-            if (err) {console.log(err); return callback(err, null);}
+            if (err) {
+                console.log(err);
+                return callback(err, null);
+            }
 
             console.log("Found " + items.length + " posts");
 
@@ -54,10 +59,10 @@ function PostsDAO(db) {
         });
     };
 
-    this.getPostsByTag = function(tag, num, callback) {
+    this.getPostsByTag = function (tag, num, callback) {
         "use strict";
 
-        posts.find({ tags : tag }).sort({date: -1}).limit(num).toArray(function(err, items) {
+        posts.find({tags: tag}).sort({date: -1}).limit(num).toArray(function (err, items) {
             "use strict";
 
             if (err) return callback(err, null);
@@ -68,9 +73,9 @@ function PostsDAO(db) {
         });
     };
 
-    this.getPostByPermalink = function(permalink, callback) {
+    this.getPostByPermalink = function (permalink, callback) {
         "use strict";
-        posts.findOne({'permalink': permalink}, function(err, post) {
+        posts.findOne({'permalink': permalink}, function (err, post) {
             "use strict";
 
             if (err) return callback(err, null);
@@ -79,7 +84,7 @@ function PostsDAO(db) {
         });
     };
 
-    this.addComment = function(permalink, name, email, body, callback) {
+    this.addComment = function (permalink, name, email, body, callback) {
         "use strict";
 
         var comment = {'author': name, 'body': body};
@@ -89,7 +94,7 @@ function PostsDAO(db) {
         }
 
         // hw3.3 TODO
-        posts.update({'permalink': permalink}, {'$push': {'comments': comment}}, function(err, numModified) {
+        posts.update({'permalink': permalink}, {'$push': {'comments': comment}}, function (err, numModified) {
             "use strict";
 
             if (err) return callback(err, null);
